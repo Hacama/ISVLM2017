@@ -1,0 +1,17 @@
+﻿
+
+
+@using ISVLM2017.Domain.Entities
+@model IEnumerable<TB_CAJA_DETALLE>
+@{
+    ViewBag.Title = "CajaDetalles";
+}
+@foreach (var p in Model)
+{
+    <div>
+        <h3>@p.cajadetalle_id</h3>
+        @p.cajadetalle_fecha
+        <h4>@p.cajadetalle_billete_docientos</h4>
+    </div>
+}
+

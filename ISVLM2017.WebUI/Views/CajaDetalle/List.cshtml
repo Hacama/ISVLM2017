@@ -1,0 +1,429 @@
+﻿@using ISVLM2017.Domain.Entities
+@model IEnumerable<CajaDetalle>
+
+@{
+    ViewBag.Title = "CajaDetalles";
+}
+<!-- CSS files (include only one of the two files!) -->
+<!-- If you are using bootstrap: -->
+<link rel="stylesheet" type="text/css" href="~/Content/datatable-bootstrap.min.css" media="screen">
+
+<!-- JS files -->
+
+<!-- Add the following if you want to use the jQuery wrapper (you still need datatable.min.js): -->
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script type="text/javascript" src="https://1000hz.github.io/bootstrap-validator/dist/validator.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script type="text/javascript" src="~/Scripts/datatable.min.js"></script>
+<script type="text/javascript" src="~/Scripts/datatable.jquery.min.js"></script>
+<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+<script type="text/javascript" src="https://1000hz.github.io/bootstrap-validator/assets/js/application.js" ></script>
+<script type="text/javascript">
+
+    function S_ShowListaDetalle(response) {
+
+     
+        var tbl_CajaDetalle=$('#tbl_CajaDetalle');
+
+        $("#tbl_CajaDetalle > tbody").html("");
+        var thead = $('<thead/>');
+        var tbody = $('<tbody/>');
+        var th_tr = $('<tr/>');
+        var th_th1 = $('<th/>');
+        var th_th2 = $('<th/>');
+        var th_th3 = $('<th/>');
+
+        th_th1.text('ID');
+        th_th2.text('Fecha');
+        th_th3.text('Monto');
+
+        th_tr.append(th_th1).append(th_th2).append(th_th3);
+        thead.append(th_tr);
+      
+
+        $.each(response, function (i, item) {
+
+            var cajadetalle_id= $.trim(response[i].cajadetalle_id );
+            var cajadetalle_fecha= $.trim(response[i].cajadetalle_fecha );
+            var cajadetalle_billete_docientos= $.trim(response[i].cajadetalle_billete_docientos );
+            var cajadetalle_billete_cien= $.trim(response[i].cajadetalle_billete_cien );
+            var cajadetalle_billete_cincuenta= $.trim(response[i].cajadetalle_billete_cincuenta );
+            var cajadetalle_billete_veinte= $.trim(response[i].cajadetalle_billete_veinte );
+            var cajadetalle_billete_diez= $.trim(response[i].cajadetalle_billete_diez );
+            var cajadetalle_descripcion = $.trim(response[i].cajadetalle_descripcion);
+
+            var date = new Date(cajadetalle_fecha),
+                 yr = date.getFullYear(),
+                    month = date.getMonth() < 10 ? '0' + date.getMonth() : date.getMonth(),
+                    day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
+                    newDate = yr + '-' + month + '-' + day;
+
+
+            cajadetalle_billete_docientos=parseInt(cajadetalle_billete_docientos);
+            cajadetalle_billete_cien=parseInt(cajadetalle_billete_cien);
+            cajadetalle_billete_cincuenta=parseInt(cajadetalle_billete_cincuenta);
+            cajadetalle_billete_veinte=parseInt(cajadetalle_billete_veinte);
+            cajadetalle_billete_diez=parseInt(cajadetalle_billete_diez);
+
+            var monto = cajadetalle_billete_docientos * 200 + cajadetalle_billete_cien * 100 + cajadetalle_billete_cincuenta * 50
+                + cajadetalle_billete_veinte * 20
+                + cajadetalle_billete_diez * 10;
+
+            var tr=$('<tr/>');
+            var td1=$('<td/>');
+            var td2=$('<td/>');
+            var td3=$('<td/>');
+            var td4=$('<td/>');
+            var td5=$('<td/>');
+            var td6=$('<td/>');
+            var td7=$('<td/>');
+            var td8 = $('<td/>');
+            var td9 = $('<td/>');
+            var td10 = $('<td/>');
+            var td11 = $('<td/>');
+
+            var span9 = $('<span/>');
+            var button9 = $('<button/>');
+            var span10 = $('<span/>');
+            var button10 = $('<button/>');
+
+
+            td1.text(cajadetalle_id);
+            td2.text(newDate);
+            td3.text(monto);
+            td4.text(cajadetalle_billete_docientos);
+            td5.text(cajadetalle_billete_cien).hide();
+            td6.text(cajadetalle_billete_cincuenta).hide();
+            td7.text(cajadetalle_billete_veinte).hide();
+            td8.text(cajadetalle_billete_diez).hide();
+            td9.text(cajadetalle_descripcion).hide();
+
+            span9.addClass('table-edit');
+            button9.addClass('btn btn-success btn-rounded btn-sm my-0').attr("data-toggle", "modal").attr("data-target", "#myModal").text('Edit');
+
+            span10.addClass('table-remove');
+            button10.addClass('btn btn-danger btn-rounded btn-sm my-0').text('Remove');
+
+    
+
+
+            span9.append(button9);
+            td10.append(span9);
+
+            span10.append(button10);
+            td11.append(span10);
+
+            tr.append(td1).append(td2).append(td3).append(td4).append(td5).append(td6).append(td7).append(td8).append(td9).append(td10).append(td11);
+            tbody. append(tr);
+
+
+        });
+        tbl_CajaDetalle.append(thead);
+        tbl_CajaDetalle.append(tbody);
+
+
+    }
+
+
+    function GuardarCajaDetalle(nuevoBilletes, g_accion_) {
+
+        var ObjectData = new Object();
+        ObjectData.nuevoBilletes = nuevoBilletes;
+        ObjectData.accion = g_accion_;
+        var stringify = JSON.stringify(ObjectData);
+
+
+        $.ajax({
+            type: "POST",
+            url: "/CajaDetalle/GuardarCajaDetalle",
+            data: stringify,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+
+                if (otable != null) otable.destroy();
+                $('#tbl_CajaDetalle').empty();
+                  otable = '';
+             
+                S_ShowListaDetalle(response);
+
+
+                //$('#first-datatable-output').html($('#first-datatable-without').html());
+
+
+                otable = new DataTable(document.querySelector('#first-datatable-output table'), {
+                    //  otable = $('#tbl_CajaDetalle').datatable({
+                    "destroy": true,
+                    pageSize: 5,
+                    pagingDivSelector: '#paging-first-datatable',
+                    sort: [true, true, true],
+                    filters: [true, true, true],
+                    //  filters: [true, false, 'select'],
+                    filterText: 'Type to filter... ',
+                    onChange: function (o, n) {
+                        $('tr td:nth-child(4)').hide();
+                        $('tr td:nth-child(5)').hide();
+                        $('tr td:nth-child(6)').hide();
+                        $('tr td:nth-child(7)').hide();
+                        $('tr td:nth-child(8)').hide();
+                        $('tr td:nth-child(9)').hide();
+                    }
+
+                });
+            
+                $('#myTab a[href="#first-datatable-output"]').tab('show');
+
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    }
+
+
+
+    /* First example */
+
+    var g_accion = '', g_cajadetalle_id, otable='';
+    $(document).ready(function () {
+
+        S_ShowListaDetalle( @Html.Raw(Json.Encode(Model)));
+
+      
+        $('#first-datatable-output').html($('#first-datatable-without').html());
+
+
+         otable = new DataTable(document.querySelector('#first-datatable-output table'), {
+      //  otable = $('#tbl_CajaDetalle').datatable({
+            "destroy": true,
+            pageSize: 5,
+            pagingDivSelector: '#paging-first-datatable',
+            sort: [true, true, true],
+            filters: [true, true, true],
+            //  filters: [true, false, 'select'],
+            filterText: 'Type to filter... ',
+            onChange: function (o, n) {
+                $('tr td:nth-child(4)').hide();
+                $('tr td:nth-child(5)').hide();
+                $('tr td:nth-child(6)').hide();
+                $('tr td:nth-child(7)').hide();
+                $('tr td:nth-child(8)').hide();
+                $('tr td:nth-child(9)').hide();
+            }
+
+        });
+
+      
+       
+        $('tr td:nth-child(4)').hide();
+        $('tr td:nth-child(5)').hide();
+        $('tr td:nth-child(6)').hide();
+        $('tr td:nth-child(7)').hide();
+        $('tr td:nth-child(8)').hide();
+        $('tr td:nth-child(9)').hide();
+
+
+
+
+        $('#formBilletes').validator().on('submit', function (e) {
+            if (!(e.isDefaultPrevented())) {
+                var cajadetalle_id = g_cajadetalle_id
+                var cajadetalle_billete_docientos = $.trim($('#txt_b200').val());
+                var cajadetalle_billete_cien = $.trim($('#txt_b100').val());
+                var cajadetalle_billete_cincuenta = $.trim($('#txt_b50').val());
+                var cajadetalle_billete_veinte = $.trim($('#txt_b20').val());
+                var cajadetalle_billete_diez = $.trim($('#txt_b10').val());
+                var cajadetalle_descripcion = $.trim($('#txt_nombreBillete').val());
+                var g_accion_ = g_accion;
+                if (cajadetalle_descripcion == null) cajadetalle_descripcion = '';
+
+                var nuevoBilletes = {};
+                nuevoBilletes.cajadetalle_id = cajadetalle_id;
+                nuevoBilletes.cajadetalle_billete_docientos = cajadetalle_billete_docientos;
+                nuevoBilletes.cajadetalle_billete_cien = cajadetalle_billete_cien;
+                nuevoBilletes.cajadetalle_billete_cincuenta = cajadetalle_billete_cincuenta;
+                nuevoBilletes.cajadetalle_billete_veinte = cajadetalle_billete_veinte;
+                nuevoBilletes.cajadetalle_billete_diez = cajadetalle_billete_diez;
+                nuevoBilletes.cajadetalle_descripcion = cajadetalle_descripcion;
+
+                GuardarCajaDetalle(nuevoBilletes, g_accion_);
+            }
+            return false;
+        });
+
+
+        //  $('#tbl_CajaDetalle tbody').on('click', 'td.table-edit', function (e) {
+        $('body').on('click', '.table-edit', function (e) {
+            e.preventDefault();            
+          
+    
+          
+
+            var link = $('#myTab .active').next().children('a').attr('href');
+            $('#myTab a[href="' + link + '"]').tab('show');
+            $('#myTab a[href="' + link + '"]').html('Modificar');
+
+
+
+            $('#myTab a[href="#first-datatable-javascript"]').tab('show');
+            $('#myTab a[href="#first-datatable-javascript"]').html('Modificar');
+
+            var cajadetalle_id = $.trim($(this).parents("tr").find("td:eq(0)").html());
+            var cajadetalle_fecha = $.trim($(this).parents("tr").find("td:eq(1)").html());
+            var cajadetalle_billete_docientos = $.trim($(this).parents("tr").find("td:eq(3)").html());
+            var cajadetalle_billete_cien = $.trim($(this).parents("tr").find("td:eq(4)").html());
+            var cajadetalle_billete_cincuenta = $.trim($(this).parents("tr").find("td:eq(5)").html());
+            var cajadetalle_billete_veinte = $.trim($(this).parents("tr").find("td:eq(6)").html());
+            var cajadetalle_billete_diez = $.trim($(this).parents("tr").find("td:eq(7)").html());
+            var cajadetalle_descripcion = $.trim($(this).parents("tr").find("td:eq(8)").html());
+
+            g_cajadetalle_id = cajadetalle_id;
+            $('#txt_b200').val(cajadetalle_billete_docientos);
+            $('#txt_b100').val(cajadetalle_billete_cien);
+            $('#txt_b50').val(cajadetalle_billete_cincuenta);
+            $('#txt_b20').val(cajadetalle_billete_veinte);
+            $('#txt_b10').val(cajadetalle_billete_diez);
+            $('#txt_nombreBillete').val(cajadetalle_descripcion);
+
+            g_accion = "Modificar";
+
+            return false;
+        });
+
+        $('body').on('click', '.table-remove', function (e) {
+      //  $('.table-remove').on('click', function (e) {
+            e.preventDefault();
+            g_accion = "Eliminar";
+            var cajadetalle_id = $.trim($(this).parents("tr").find("td:eq(0)").html());
+            g_cajadetalle_id = cajadetalle_id;
+
+            var g_accion_ = g_accion;
+
+            var nuevoBilletes = {};
+            nuevoBilletes.cajadetalle_id = cajadetalle_id;
+
+            GuardarCajaDetalle(nuevoBilletes, g_accion_);
+            return false;
+        });
+ 
+
+        $('#myTab a[href="#first-datatable-output"]').on('click', function (e) {
+            e.preventDefault();
+            $('#myTab a[href="#first-datatable-javascript"]').html('Nuevo');
+            g_accion = "Agregar";
+            g_cajadetalle_id = 0;
+
+        });
+        $('#myTab a[href="#first-datatable-javascript"]').on('click', function (e) {
+            e.preventDefault();
+            g_accion = "Agregar";
+            g_cajadetalle_id=0
+
+        });
+
+
+    });
+
+
+</script>
+
+   
+
+
+<div role="tabpanel">
+    <!-- Nav tabs -->
+    <ul id="myTab" class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#first-datatable-output" aria-controls="first-datatable-output" role="tab" data-toggle="tab">Datos</a></li>             
+        <li role="presentation"><a href="#first-datatable-javascript" aria-controls="first-datatable-javascript" role="tab" data-toggle="tab">Nuevo</a></li>       
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="first-datatable-output">
+
+        </div>
+        <div role="tabpanel" class="tab-pane" id="first-datatable-without">
+            <table id="tbl_CajaDetalle" class="table table-bordered">
+             
+               
+            
+            </table>
+            <div id="paging-first-datatable"></div>
+        </div>
+       
+        <div role="tabpanel" class="tab-pane" id="first-datatable-javascript">
+            <form data-toggle="validator" role="form" id="formBilletes">
+                <div class="form-group">
+                    <label for="txt_b200" class="control-label">Billete dosciento / 200</label>
+                    <input type="number" pattern="\d*" class="form-control" id="txt_b200" placeholder="Billetes doscientes/ 200" data-error="Ingrese valor entero">
+                </div>
+                <div class="form-group">
+                    <label for="txt_b200" class="control-label">Billete cien / 100</label>
+                    <input type="number" class="form-control" id="txt_b100" placeholder="Billete cien / 100">
+                </div>
+                <div class="form-group">
+                    <label for="txt_b200" class="control-label">Billete cincuenta / 50</label>
+                    <input type="number" class="form-control" id="txt_b50" placeholder="Billete cincuenta / 50">
+                </div>
+                <div class="form-group">
+                    <label for="txt_b200" class="control-label">Billete veinte / 20</label>
+                    <input type="number" class="form-control" id="txt_b20" placeholder="Billete veinte / 20">
+                </div>
+                <div class="form-group">
+                    <label for="txt_b200" class="control-label">Billete diez / 10</label>
+                    <input type="number" class="form-control" id="txt_b10" placeholder="Billete diez / 10">
+                </div>
+                <div class="form-group">
+                    <label for="txt_b200" class="control-label">Nombre o descripción</label>
+                    <input type="text" class="form-control" id="txt_nombreBillete" placeholder="Nombre o descripción">
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" id="btn_guadar_dinero" class="btn btn-primary">Guardar Billetes</button>
+                </div>
+            </form>
+         
+           
+        </div>
+      
+    </div>
+</div>
+
+
+
+@*<div role="tabpanel" class="tab-pane active" id="first-datatable-output">
+
+</div>
+<div role="tabpanel" class="tab-pane" id="first-datatable-without">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Firstname</th>
+                <th>Lastname</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+
+            @foreach (var p in Model)
+            {
+                <tr>
+
+                    <td>@p.cajadetalle_id</td>
+                    <td>@p.cajadetalle_fecha</td>
+                    <td>@p.cajadetalle_billete_docientos</td>
+                </tr>
+
+
+            }
+
+        </tbody>
+    </table>
+ </div>
+   
+    <div id="paging-first-datatable"></div>*@

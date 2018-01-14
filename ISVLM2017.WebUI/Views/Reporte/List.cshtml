@@ -1,0 +1,195 @@
+﻿@*@model ISVLM2017.Domain.Model.ReporteViewModel*@
+
+@using ISVLM2017.Domain.Model
+@model ReporteViewModel
+
+@{
+    ViewBag.Title = "Reportes";
+}
+<!-- CSS files (include only one of the two files!) -->
+<!-- If you are using bootstrap: -->
+<link rel="stylesheet" type="text/css" href="~/Content/datatable-bootstrap.min.css" media="screen">
+
+<!-- JS files -->
+<!-- Add the following if you want to use the jQuery wrapper (you still need datatable.min.js): -->
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script type="text/javascript" src="/scripts/moment.min.js"></script>
+<script type="text/javascript" src="https://1000hz.github.io/bootstrap-validator/dist/validator.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script type="text/javascript" src="~/Scripts/datatable.min.js"></script>
+<script type="text/javascript" src="~/Scripts/datatable.jquery.min.js"></script>
+<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+<script type="text/javascript" src="https://1000hz.github.io/bootstrap-validator/assets/js/application.js"></script>
+<script type="text/javascript" src="/scripts/bootstrap-datetimepicker.js"></script>
+<!-- include your less or built css files  -->
+<!--
+bootstrap-datetimepicker-build.less will pull in "../bootstrap/variables.less" and "bootstrap-datetimepicker.less";
+or
+<link rel="stylesheet" href="/Content/bootstrap-datetimepicker.css" />
+-->
+
+<script type="text/javascript">
+
+   
+    function S_LLenarMarcas(response) {
+
+
+        var cb_ReporteVMarca = $('#cb_ReporteVMarca');
+        cb_ReporteVMarca.html("");      
+   
+        cb_ReporteVMarca.append(new Option("Seleccione", ""));
+        $.each(response, function (i, item) {
+            var codigodetalle_id = $.trim(response[i].codigodetalle_id);
+            var codigodetalle_descrip = $.trim(response[i].codigodetalle_descrip);         
+            cb_ReporteVMarca.append(new Option(codigodetalle_descrip, codigodetalle_id));    
+        });     
+
+
+    }
+
+
+    function GuardarStock(nuevoBilletes, g_accion_) {
+
+        var ObjectData = new Object();
+        ObjectData.nuevoBilletes = nuevoBilletes;
+        ObjectData.accion = g_accion_;
+        var stringify = JSON.stringify(ObjectData);
+
+
+        $.ajax({
+            type: "POST",
+            url: "/CajaDetalle/GuardarStock",
+            data: stringify,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+
+                if (otable != null) otable.destroy();
+                $('#tbl_Stock').empty();
+                otable = '';
+
+                S_ShowListaDetalle(response);
+
+
+                //$('#first-datatable-output').html($('#first-datatable-without').html());
+
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    }
+
+
+
+    /* First example */
+
+    var g_accion = '', g_stock_id, otable = '';
+    $(document).ready(function () {
+
+        S_LLenarMarcas( @Html.Raw(Json.Encode(Model.Marcas)));
+        $("#rb_ReporteVTodo").prop('checked', true);
+
+        $('#dtp_ReporteVmes').datetimepicker();
+
+        $('#btn_reporteVentas').on('click', function (e) {
+            if (!(e.isDefaultPrevented())) {
+
+                var i_marca, i_mes = 0;
+                var rb_ReporteVMarca = $("#rb_ReporteVMarca");
+                var rb_ReporteVTodo = $("#rb_ReporteVTodo");
+
+                if (rb_ReporteVTodo.is(":checked"))
+                {//0 mostrar todo los proveedores
+                    i_marca = 0;
+
+                } else if (rb_ReporteVMarca.is(":checked"))                {
+                    var i_ReporteVMarca = $("#cb_ReporteVMarca").val();
+                    var i_ReporteVmes = $("#dtp_ReporteVmes").val();
+                    i_marca = i_ReporteVMarca;
+                    i_mes = i_ReporteVmes;
+                    alert(i_ReporteVmes);
+                }
+             
+            }
+            return false;
+        });
+
+
+        $('body').on('click', '.table-remove', function (e) {
+            //  $('.table-remove').on('click', function (e) {
+            e.preventDefault();
+            g_accion = "Eliminar";
+            var stock_id = $.trim($(this).parents("tr").find("td:eq(0)").html());
+            g_stock_id = stock_id;
+
+            var g_accion_ = g_accion;
+
+            var nuevoStock = {};
+            nuevoStock.stock_id = stock_id;
+
+            GuardarStock(nuevoStock, g_accion_);
+            return false;
+        });
+
+
+    });
+
+
+</script>
+
+<form data-toggle="validator" role="form" id="formBilletes" >
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Reporte de Ventas</div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label class="radio-inline">
+                    <input type="radio" name="optradio" id="rb_ReporteVMarca">Marca
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="optradio" id="rb_ReporteVTodo">Todo
+                </label>
+
+            </div>
+         
+            <div class="form-group">
+                <label for="cb_ReporteVMarca" class="control-label col-sm-3">Marcas</label>
+                <div class="col-sm-8">
+                    <select class="form-control" id="cb_ReporteVMarca"/>                   
+                </div>
+            </div> 
+            <div class="form-group">
+                <label for="dtp_ReporteVmes" class="control-label col-sm-3">Fecha</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="dtp_ReporteVmes">
+                </div>
+            </div>    
+     
+            <div class="col-sm-offset-2 col-sm-8">
+                <button type="submit" id="btn_reporteVentas" class="btn btn-primary">Mostrar</button>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">Reporte de Ejemplares</div>
+        <div class="panel-body">   
+
+            <div class="col-sm-offset-2 col-sm-8">
+                <button type="submit" id="btn_ReporteE" class="btn btn-primary">Mostrar</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+
+
+
+
+

@@ -1,8 +1,17 @@
 ﻿
-@using ISVLM2017.Domain.Model
-@model PrincipalViewModel
 
+
+@using ISVLM2017.Domain.Entities
+@model IEnumerable<TB_CAJA_DETALLE>
 @{
-    ViewBag.Title = "Sitio Principal";
+    ViewBag.Title = "CajaDetalles";
 }
-<p>Bienvenido al sitio principal de ISVLM2017 Elija una opción para navegar en el menú de la prte  izquierda</p>
+@foreach (var p in Model)
+{
+    <div>
+        <h3>@p.cajadetalle_id</h3>
+        @p.cajadetalle_fecha
+        <h4>@p.cajadetalle_billete_docientos</h4>
+    </div>
+}
+

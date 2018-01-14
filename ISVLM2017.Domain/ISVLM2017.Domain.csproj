@@ -75,11 +75,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstract\ICajaDetalleRepository.cs" />
+    <Compile Include="Abstract\ICodigoRepository.cs" />
+    <Compile Include="Abstract\IConfiguracionEjemplarRepository.cs" />
+    <Compile Include="Abstract\IStockRepository.cs" />
     <Compile Include="Concrete\EFCajaDetalleRepository.cs" />
+    <Compile Include="Concrete\EFCodigoRepository.cs" />
+    <Compile Include="Concrete\EFConfiguracionEjemplarRepository.cs" />
     <Compile Include="Concrete\EFDbContext.cs" />
+    <Compile Include="Concrete\EFStockRepository.cs" />
     <Compile Include="Entities\CajaDetalle.cs" />
-    <Compile Include="Entities\TB_CAJA_DETALLE.cs" />
-    <Compile Include="Entities\TB_CAJA_DETALLE_BILLETE.cs" />
+    <Compile Include="Entities\CajaDetalleBillete.cs" />
+    <Compile Include="Entities\CodigoGeneral.cs" />
+    <Compile Include="Entities\CodigoGeneralDetalle.cs" />
+    <Compile Include="Entities\ConfiguracionEjemplar.cs" />
+    <Compile Include="Entities\NavMenu.cs" />
+    <Compile Include="Entities\Stock.cs" />
+    <Compile Include="Model\ConfiguracionEjemplarViewModel.cs" />
+    <Compile Include="Model\EjemplarViewModel.cs" />
+    <Compile Include="Model\PrincipalViewModel.cs" />
+    <Compile Include="Model\ProductoViewModel.cs" />
+    <Compile Include="Model\ReporteViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

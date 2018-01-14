@@ -37,6 +37,9 @@ namespace ISVLM2017.WebUI.Infrastructure
             //kernel.Bind<ICajaDetalleRepository>().ToConstant(mock.Object);
 
             kernel.Bind<ICajaDetalleRepository>().To<EFCajaDetalleRepository>();
+            kernel.Bind<IStockRepository>().To<EFStockRepository>();
+            kernel.Bind<ICodigoRepository>().To<EFCodigoRepository>();
+            kernel.Bind<IConfiguracionEjemplarRepository>().To<EFConfiguracionEjemplarRepository>();
         }
     }
 }

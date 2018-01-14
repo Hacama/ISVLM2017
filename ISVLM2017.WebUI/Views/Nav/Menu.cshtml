@@ -1,0 +1,16 @@
+﻿@model  List<ISVLM2017.Domain.Entities.NavMenu> 
+
+@*@Html.ActionLink("Home", "List", "Home", null,
+new { @class = "btn btn-block btn-default btn-lg" })*@
+@foreach (var link in Model)
+{
+        @Html.RouteLink(link.Description , new
+    {
+        controller = link.Controller,
+        action = link.Action
+  
+    }, new
+    {
+        @class = "btn btn-block btn-default btn-lg"
+    })
+}

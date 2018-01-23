@@ -40,6 +40,11 @@ namespace ISVLM2017.WebUI.Infrastructure
             kernel.Bind<IStockRepository>().To<EFStockRepository>();
             kernel.Bind<ICodigoRepository>().To<EFCodigoRepository>();
             kernel.Bind<IConfiguracionEjemplarRepository>().To<EFConfiguracionEjemplarRepository>();
+            kernel.Bind<IProveedorRepository>().To<EFProveedorRepository>();
+            kernel.Bind<ITipoEjemplarStockRepository>().To<EFTipoEjemplarStockRepository>();
+            kernel.Bind<IStockTransaccionRepository>().To<EFStockTransaccionRepository>();
+            kernel.Bind<IStockTransaccionCajaRepository>().To<EFStockTransaccionCajaRepository>();
+            kernel.Bind<IListarEjemplarVentaPorTipoRepository>().To<EFListarEjemplarVentaPorTipoRepository>();
         }
     }
 }

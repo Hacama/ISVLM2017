@@ -8,5 +8,9 @@ namespace ISVLM2017.Domain.Abstract
     {
         IEnumerable<Stock> Stocks { get; }
         List<Stock> buscarListaStock();
+        void grabarStock(Stock Stocks);
+        void borrarStock(Stock ts_);
+         Stock modificarStock(Stock ts_);
+         Stock buscarStock(Stock ts_);
     }
 }

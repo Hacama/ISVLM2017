@@ -45,36 +45,36 @@
 
         $.each(response, function (i, item) {
 
-            var stock_id = $.trim(response[i].stock_id);           
+            var stock_id = $.trim(response[i].stock_id);
             var stock_nombre = $.trim(response[i].stock_nombre);
-            var stock_precio = $.trim(response[i].stock_precio);     
+            var stock_precio = $.trim(response[i].stock_precio);
 
             stock_id = parseInt(stock_id);
-     
+
 
             var tr = $('<tr/>');
             var td1 = $('<td/>');
             var td2 = $('<td/>');
             var td3 = $('<td/>');
-            var td4 = $('<td/>');           
+            var td4 = $('<td/>');
 
             var span4 = $('<span/>');
-            var button4 = $('<button/>');            
+            var button4 = $('<button/>');
 
             td1.text(stock_id);
             td2.text(stock_nombre);
             td3.text(stock_precio);
-      
+
 
             span4.addClass('table-edit');
-            button4.addClass('btn btn-success btn-rounded btn-sm my-0').attr("data-toggle", "modal").attr("data-target", "#myModal").text('Agregar');         
+            button4.addClass('btn btn-success btn-rounded btn-sm my-0').attr("data-toggle", "modal").attr("data-target", "#myModal").text('Agregar');
 
 
 
 
             span4.append(button4);
             td4.append(span4);
-         
+
 
             tr.append(td1).append(td2).append(td3).append(td4);
             tbody.append(tr);
@@ -92,7 +92,7 @@
 
         var tbl_Stock = $('#tbl_ConfEjemplares');
 
-        $("#tbl_ConfEjemplares > tbody").html("");
+        $("#tbl_ConfEjemplares").html("");
         var thead = $('<thead/>');
         var tbody = $('<tbody/>');
         var th_tr = $('<tr/>');
@@ -110,37 +110,40 @@
 
         $.each(response, function (i, item) {
 
+            var conf_ejemplares_id = $.trim(response[i].conf_ejemplares_id);
             var stock_nombre = $.trim(response[i].stock_nombre);
             var codigodetalle_descrip = $.trim(response[i].codigodetalle_descrip);
-            var nombre_ejemplar = $.trim(response[i].nombre_ejemplar);    
+            var nombre_ejemplar = $.trim(response[i].nombre_ejemplar);
 
 
             var tr = $('<tr/>');
-            var td1 = $('<td/>');
+            var td1 = $('<td/>').hide();
             var td2 = $('<td/>');
             var td3 = $('<td/>');
             var td4 = $('<td/>');
-
-            var span4 = $('<span/>');
-            var button4 = $('<button/>');
-         
+            var td5 = $('<td/>');
 
 
-            td1.text(stock_nombre);
-            td2.text(codigodetalle_descrip);
-            td3.text(nombre_ejemplar);         
+            var span5 = $('<span/>');
+            var button5 = $('<button/>');
 
-          
 
-            span4.addClass('table-remove');
-            button4.addClass('btn btn-danger btn-rounded btn-sm my-0').text('Remove');
-            
-            span4.append(button4);
-            td4.append(span4);
 
-          
+            td1.text(conf_ejemplares_id);
+            td2.text(stock_nombre);
+            td3.text(codigodetalle_descrip);
+            td4.text(nombre_ejemplar);
 
-            tr.append(td1).append(td2).append(td3).append(td4);
+
+            span5.addClass('table-remove');
+            button5.addClass('btn btn-danger btn-rounded btn-sm my-0').text('Remove');
+
+            span5.append(button5);
+            td5.append(span5);
+
+
+
+            tr.append(td1).append(td2).append(td3).append(td4).append(td5);
             tbody.append(tr);
 
 
@@ -151,56 +154,119 @@
 
     }
 
+    function S_LLenarSemanas(response) {
 
 
-    function GuardarStock(nuevoBilletes, g_accion_) {
+        var cb_semana = $('#cb_semana');
+        cb_semana.html("");
+
+        cb_semana.append(new Option("Seleccione", "0"));
+        $.each(response, function (i, item) {
+            var codigodetalle_id = $.trim(response[i].codigodetalle_id);
+            var codigodetalle_descrip = $.trim(response[i].codigodetalle_descrip);
+            cb_semana.append(new Option(codigodetalle_descrip, codigodetalle_id));
+        });
+
+
+    }
+
+    function S_LLenarTransacciones(response) {
+
+
+        var cb_transaccion = $('#cb_transaccion');
+        cb_transaccion.html("");
+
+        cb_transaccion.append(new Option("Seleccione", ""));
+        $.each(response, function (i, item) {
+            var codigodetalle_id = $.trim(response[i].codigodetalle_id);
+            var codigodetalle_descrip = $.trim(response[i].codigodetalle_descrip);
+            cb_transaccion.append(new Option(codigodetalle_descrip, codigodetalle_id));
+        });
+
+
+    }
+
+    function S_LLenarEjemplares(response) {
+
+
+        var cb_ejmplar = $('#cb_ejmplar');
+        cb_ejmplar.html("");
+
+        cb_ejmplar.append(new Option("Seleccione", ""));
+        $.each(response, function (i, item) {
+            var codigodetalle_id = $.trim(response[i].codigodetalle_id);
+            var codigodetalle_descrip = $.trim(response[i].codigodetalle_descrip);
+            cb_ejmplar.append(new Option(codigodetalle_descrip, codigodetalle_id));
+        });
+
+
+    }
+
+    function MostrarListaEjemplares(conf_dia_semana_) {
 
         var ObjectData = new Object();
-        ObjectData.nuevoBilletes = nuevoBilletes;
-        ObjectData.accion = g_accion_;
+        ObjectData.conf_dia_semana_ = conf_dia_semana_;
         var stringify = JSON.stringify(ObjectData);
-
 
         $.ajax({
             type: "POST",
-            url: "/CajaDetalle/GuardarStock",
+            url: "/ConfiguracionEjemplar/MostrarListaEjemplares",
             data: stringify,
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
+                S_ShowConfEjemplares(response);
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    }
 
-                if (otable != null) otable.destroy();
-                $('#tbl_Stock').empty();
-                otable = '';
+    function AgregarStckConf(nuevoConfiguracionEjemplar) {
 
-                S_ShowListaDetalle(response);
+        var ObjectData = new Object();
+        ObjectData.nuevoConfiguracionEjemplar = nuevoConfiguracionEjemplar;
+        var stringify = JSON.stringify(ObjectData);
+
+        $.ajax({
+            type: "POST",
+            url: "/ConfiguracionEjemplar/AgregarStckConf",
+            data: stringify,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                S_ShowConfEjemplares(response);
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    }
 
 
-                //$('#first-datatable-output').html($('#first-datatable-without').html());
 
 
-                otable = new DataTable(document.querySelector('#first-datatable-output table'), {
-                    //  otable = $('#tbl_Stock').datatable({
-                    "destroy": true,
-                    pageSize: 5,
-                    pagingDivSelector: '#paging-first-datatable',
-                    sort: [true, true, true],
-                    filters: [true, true, true],
-                    //  filters: [true, false, 'select'],
-                    filterText: 'Type to filter... ',
-                    onChange: function (o, n) {
-                        $('tr td:nth-child(4)').hide();
-                        $('tr td:nth-child(5)').hide();
-                        $('tr td:nth-child(6)').hide();
-                        $('tr td:nth-child(7)').hide();
-                        $('tr td:nth-child(8)').hide();
-                        $('tr td:nth-child(9)').hide();
-                    }
+    function EliminarStckConf(nuevoConfiguracionEjemplar) {
 
-                });
+        var ObjectData = new Object();
+        ObjectData.nuevoConfiguracionEjemplar = nuevoConfiguracionEjemplar;
+        var stringify = JSON.stringify(ObjectData);
 
-                $('#myTab a[href="#first-datatable-output"]').tab('show');
-
+        $.ajax({
+            type: "POST",
+            url: "/ConfiguracionEjemplar/EliminarStckConf",
+            data: stringify,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                S_ShowConfEjemplares(response);
             },
             failure: function (response) {
                 alert(response.responseText);
@@ -218,6 +284,9 @@
     var g_accion = '', g_stock_id, otable = '';
     $(document).ready(function () {
 
+        S_LLenarSemanas( @Html.Raw(Json.Encode(Model.Semanas)));
+        S_LLenarTransacciones( @Html.Raw(Json.Encode(Model.Transacciones)));
+        S_LLenarEjemplares( @Html.Raw(Json.Encode(Model.Ejemplares)));
         S_ShowListaDetalle( @Html.Raw(Json.Encode(Model.Stockconf)));
         S_ShowConfEjemplares( @Html.Raw(Json.Encode(Model.ConfEjemplares)));
 
@@ -234,27 +303,10 @@
             filters: [true, true, true],
             //  filters: [true, false, 'select'],
             filterText: 'Type to filter... ',
-            onChange: function (o, n) {
-                $('tr td:nth-child(4)').hide();
-                $('tr td:nth-child(5)').hide();
-                $('tr td:nth-child(6)').hide();
-                $('tr td:nth-child(7)').hide();
-                $('tr td:nth-child(8)').hide();
-                $('tr td:nth-child(9)').hide();
+            onChange: function (o, n) {             
             }
 
         });
-
-
-
-        $('tr td:nth-child(4)').hide();
-        $('tr td:nth-child(5)').hide();
-        $('tr td:nth-child(6)').hide();
-        $('tr td:nth-child(7)').hide();
-        $('tr td:nth-child(8)').hide();
-        $('tr td:nth-child(9)').hide();
-
-
 
 
         $('#formBilletes').validator().on('submit', function (e) {
@@ -290,44 +342,44 @@
         });
 
 
-        //  $('#tbl_Stock tbody').on('click', 'td.table-edit', function (e) {
-        $('body').on('click', '.table-edit', function (e) {
+        $('#cb_semana').on('change', function (e) {
             e.preventDefault();
-
-
-
 
             var link = $('#myTab .active').next().children('a').attr('href');
             $('#myTab a[href="' + link + '"]').tab('show');
-            $('#myTab a[href="' + link + '"]').html('Modificar');
-
+         //   $('#myTab a[href="' + link + '"]').html('Modificar');
 
 
             $('#myTab a[href="#first-datatable-javascript"]').tab('show');
-            $('#myTab a[href="#first-datatable-javascript"]').html('Modificar');
+            //     $('#myTab a[href="#first-datatable-javascript"]').html('Modificar');
+            var conf_dia_semana_ = $(this).val();
+            MostrarListaEjemplares(conf_dia_semana_);        
 
+            return false;
+        });
+
+        $('body').on('click', '.table-edit', function (e) {
+            e.preventDefault();
+
+            var link = $('#myTab .active').next().children('a').attr('href');
+            $('#myTab a[href="' + link + '"]').tab('show');
+           // $('#myTab a[href="' + link + '"]').html('Modificar');
+
+            $('#myTab a[href="#first-datatable-javascript"]').tab('show');
+         //   $('#myTab a[href="#first-datatable-javascript"]').html('Modificar');
+
+            var conf_dia_semana = $.trim($('#cb_semana').val());
             var stock_id = $.trim($(this).parents("tr").find("td:eq(0)").html());
-            var stock_nombre = $.trim($(this).parents("tr").find("td:eq(1)").html());
-            var stock_precio = $.trim($(this).parents("tr").find("td:eq(2)").html());
-            var stock_comision_canilla = $.trim($(this).parents("tr").find("td:eq(3)").html());
-            var stock_comision_distribuidor = $.trim($(this).parents("tr").find("td:eq(4)").html());
-            var stock_tipomercaderia = $.trim($(this).parents("tr").find("td:eq(5)").html());
-            var stock_fechaventa = $.trim($(this).parents("tr").find("td:eq(6)").html());
-            var proveedor_id = $.trim($(this).parents("tr").find("td:eq(7)").html());
-            var stock_marca = $.trim($(this).parents("tr").find("td:eq(8)").html());
+            var conf_transaccion = $.trim($('#cb_transaccion').val());
+            var conf_ejemplar = $.trim($('#cb_ejmplar').val());         
 
-            g_stock_id = stock_id;
-            $('#txt_codigo').val(stock_id);
-            $('#txt_nombre').val(stock_nombre);
-            $('#txt_precio').val(stock_precio);
-            $('#txt_comVendedor').val(stock_comision_canilla);
-            $('#txt_comDistrinuidor').val(stock_comision_distribuidor);
-            $('#cb_tipomercaderia').val(stock_tipomercaderia);
-            $('#dtp_fechadistribucion').val(stock_fechaventa);
-            $('#cb_proveedor').val(proveedor_id);
-            $('#cb_tipomarca').val(stock_marca);
+            var nuevoConfiguracionEjemplar = {};
+            nuevoConfiguracionEjemplar.conf_dia_semana = conf_dia_semana;
+            nuevoConfiguracionEjemplar.stock_id = stock_id;
+            nuevoConfiguracionEjemplar.conf_transaccion = conf_transaccion;
+            nuevoConfiguracionEjemplar.conf_ejemplar = conf_ejemplar;
 
-            g_accion = "Modificar";
+            AgregarStckConf(nuevoConfiguracionEjemplar);
 
             return false;
         });
@@ -335,23 +387,21 @@
         $('body').on('click', '.table-remove', function (e) {
             //  $('.table-remove').on('click', function (e) {
             e.preventDefault();
-            g_accion = "Eliminar";
-            var stock_id = $.trim($(this).parents("tr").find("td:eq(0)").html());
-            g_stock_id = stock_id;
+           
+            var conf_ejemplares_id = $.trim($(this).parents("tr").find("td:eq(0)").html());
+            var conf_dia_semana = $.trim($('#cb_semana').val());
 
-            var g_accion_ = g_accion;
-
-            var nuevoStock = {};
-            nuevoStock.stock_id = stock_id;
-
-            GuardarStock(nuevoStock, g_accion_);
+            var nuevoConfiguracionEjemplar = {};
+            nuevoConfiguracionEjemplar.conf_ejemplares_id = conf_ejemplares_id;
+            nuevoConfiguracionEjemplar.conf_dia_semana = conf_dia_semana;
+            EliminarStckConf(nuevoConfiguracionEjemplar);
             return false;
         });
 
 
         $('#myTab a[href="#first-datatable-output"]').on('click', function (e) {
             e.preventDefault();
-            $('#myTab a[href="#first-datatable-javascript"]').html('Nuevo');
+            //  $('#myTab a[href="#first-datatable-javascript"]').html('Nuevo');
             g_accion = "Agregar";
             g_stock_id = 0;
 
@@ -371,29 +421,23 @@
 
 
 <div class="form-group">
-    @Html.LabelFor(model => model.selectedItem, "Semanas", new { @class = "control-label col-md-2" })
-
-       
-            @Html.DropDownListFor(model => model.selectedItem, new SelectList(Model.Semanas, "codigodetalle_id", "codigodetalle_descrip"), "- Seleccione -")
-            @Html.ValidationMessageFor(model => model.selectedItem)
-         
+    <label for="cb_semana" class="control-label col-sm-3">Dia</label>
+    <div class="col-sm-8">
+        <select class="form-control" id="cb_semana"></select>    
     </div>
+</div> 
 <div class="form-group">
-    @Html.LabelFor(model => model.selectedItem, "Transacciones", new { @class = "control-label col-md-2" })
-
-    
-        @Html.DropDownListFor(model => model.selectedItem, new SelectList(Model.Transacciones, "codigodetalle_id", "codigodetalle_descrip"), "- Seleccione -")
-        @Html.ValidationMessageFor(model => model.selectedItem)
-  
-</div>
+    <label for="cb_transaccion" class="control-label col-sm-3">Transacción</label>
+    <div class="col-sm-8">
+        <select class="form-control" id="cb_transaccion" ></select>    
+    </div>
+</div> 
 <div class="form-group">
-    @Html.LabelFor(model => model.selectedItem, "Ejemplares", new { @class = "control-label col-md-2" })
-
-    
-        @Html.DropDownListFor(model => model.selectedItem, new SelectList(Model.Ejemplares, "codigodetalle_id", "codigodetalle_descrip"), "- Seleccione -")
-        @Html.ValidationMessageFor(model => model.selectedItem)
-    
-</div>
+    <label for="cb_ejmplar" class="control-label col-sm-3">Ejemplar</label>
+    <div class="col-sm-8">
+        <select class="form-control" id="cb_ejmplar" ></select>    
+    </div>
+</div> 
 
 
 

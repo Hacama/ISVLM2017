@@ -1,5 +1,5 @@
-﻿@using ISVLM2017.Domain.Entities
-@model IEnumerable<Stock>
+﻿@using ISVLM2017.Domain.Model
+@model StockViewModel
 
 @{
     ViewBag.Title = "Stock";
@@ -11,6 +11,7 @@
 <!-- JS files -->
 <!-- Add the following if you want to use the jQuery wrapper (you still need datatable.min.js): -->
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script type="text/javascript" src="/scripts/moment.min.js"></script>
 <script type="text/javascript" src="https://1000hz.github.io/bootstrap-validator/dist/validator.min.js"></script>
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
@@ -18,10 +19,11 @@
 <script type="text/javascript" src="~/Scripts/datatable.jquery.min.js"></script>
 <script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
 <script type="text/javascript" src="https://1000hz.github.io/bootstrap-validator/assets/js/application.js"></script>
+<script type="text/javascript" src="/scripts/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript">
 
     function S_ShowListaDetalle(response) {
-
+       
 
         var tbl_Stock=$('#tbl_Stock');
 
@@ -53,22 +55,19 @@
             var proveedor_id = $.trim(response[i].proveedor_id);
             var stock_marca = $.trim(response[i].stock_marca);
 
-            var date = new Date(stock_fechaventa),
-                 yr = date.getFullYear(),
-                    month = date.getMonth() < 10 ? '0' + date.getMonth() : date.getMonth(),
-                    day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate(),
-                    newDate = yr + '-' + month + '-' + day;
+           
+    
+            var date = new Date(parseInt(stock_fechaventa.replace('/Date(', '')));
+            yr = date.getFullYear();
+            month= date.getMonth()+1;
+            month = month < 10 ? '0' + month : month;
+            day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+          
+            newDate = day + '/' + month + '/' + yr;
+
 
 
             stock_id = parseInt(stock_id);
-            //cajadetalle_billete_cien=parseInt(cajadetalle_billete_cien);
-            //cajadetalle_billete_cincuenta=parseInt(cajadetalle_billete_cincuenta);
-            //cajadetalle_billete_veinte=parseInt(cajadetalle_billete_veinte);
-            //cajadetalle_billete_diez=parseInt(cajadetalle_billete_diez);
-
-            //var monto = cajadetalle_billete_docientos * 200 + cajadetalle_billete_cien * 100 + cajadetalle_billete_cincuenta * 50
-            //    + cajadetalle_billete_veinte * 20
-            //    + cajadetalle_billete_diez * 10;
 
             var tr=$('<tr/>');
             var td1=$('<td/>');
@@ -125,18 +124,67 @@
 
     }
 
+    function S_LLenarMarcasListaProveedor(response) {
 
-    function GuardarStock(nuevoBilletes, g_accion_) {
+
+        var cb_proveedor = $('#cb_proveedor');
+        cb_proveedor.html("");
+
+        cb_proveedor.append(new Option("Seleccione", ""));
+        $.each(response, function (i, item) {
+            var proveedor_id = $.trim(response[i].proveedor_id);
+            var proveedor_descripcion = $.trim(response[i].proveedor_descripcion);
+            cb_proveedor.append(new Option(proveedor_descripcion, proveedor_id));
+        });
+
+
+    }
+
+    function S_LLenarTipoMarca(response) {
+
+
+        var cb_tipomarca = $('#cb_tipomarca');
+        cb_tipomarca.html("");
+
+        cb_tipomarca.append(new Option("Seleccione", ""));
+        $.each(response, function (i, item) {
+            var codigodetalle_id = $.trim(response[i].codigodetalle_id);
+            var codigodetalle_descrip = $.trim(response[i].codigodetalle_descrip);
+            cb_tipomarca.append(new Option(codigodetalle_descrip, codigodetalle_id));
+        });
+
+
+    }
+
+    function S_LLenarTipoMercaderia(response) {
+
+
+        var cb_tipomercaderia = $('#cb_tipomercaderia');
+        cb_tipomercaderia.html("");
+
+        cb_tipomercaderia.append(new Option("Seleccione", ""));
+        $.each(response, function (i, item) {
+            var codigodetalle_id = $.trim(response[i].codigodetalle_id);
+            var codigodetalle_descrip = $.trim(response[i].codigodetalle_descrip);
+            cb_tipomercaderia.append(new Option(codigodetalle_descrip, codigodetalle_id));
+        });
+
+
+    }
+
+
+
+    function GuardarStock(nuevoStock, g_accion_) {
 
         var ObjectData = new Object();
-        ObjectData.nuevoBilletes = nuevoBilletes;
+        ObjectData.nuevoStock = nuevoStock;
         ObjectData.accion = g_accion_;
         var stringify = JSON.stringify(ObjectData);
 
 
         $.ajax({
             type: "POST",
-            url: "/CajaDetalle/GuardarStock",
+            url: "/Stock/GuardarStock",
             data: stringify,
             contentType: "application/json; charset=utf-8",
             dataType: "json",
@@ -172,6 +220,13 @@
 
                 });
 
+                $('tr td:nth-child(4)').hide();
+                $('tr td:nth-child(5)').hide();
+                $('tr td:nth-child(6)').hide();
+                $('tr td:nth-child(7)').hide();
+                $('tr td:nth-child(8)').hide();
+                $('tr td:nth-child(9)').hide();
+
                 $('#myTab a[href="#first-datatable-output"]').tab('show');
 
             },
@@ -191,8 +246,14 @@
     var g_accion = '', g_stock_id, otable='';
     $(document).ready(function () {
 
-        S_ShowListaDetalle( @Html.Raw(Json.Encode(Model)));
-
+      
+        S_LLenarMarcasListaProveedor( @Html.Raw(Json.Encode(Model.ListaProveedor)));
+        S_LLenarTipoMarca( @Html.Raw(Json.Encode(Model.TipoMarca)));
+        S_LLenarTipoMercaderia( @Html.Raw(Json.Encode(Model.TipoMercaderia)));
+        S_ShowListaDetalle( @Html.Raw(Json.Encode(Model.ListaStock)));
+        $('#dtp_fechadistribucion').datetimepicker({
+            format: 'DD/MM/YYYY'
+        });
 
         $('#first-datatable-output').html($('#first-datatable-without').html());
 
@@ -381,27 +442,27 @@
                 </div>
                 <div class="form-group">
                     <label for="txt_comDistrinuidor" class="control-label">Comisión distribuidor</label>
-                    <input type="number" class="form-control" id="txt_comDistrinuidor" placeholder="Comisión distribuidor">
+                    <input type="number" step="0.01"  class="form-control" id="txt_comDistrinuidor" placeholder="Comisión distribuidor">
                 </div>
                 <div class="form-group">
                     <label for="cb_tipomercaderia" class="control-label">Tipo de mercadería</label>
-                    <input type="text" class="form-control" id="cb_tipomercaderia" placeholder="Tipo de mercadería">
+                    <select class="form-control" id="cb_tipomercaderia" >  </select> 
                 </div>
                 <div class="form-group">
-                    <label for="dtp_fechadistribucion" class="control-label">Fecha de distribución</label>
+                    <label for="dtp_fechadistribucion" class="control-label">Fecha de distribución</label>                
                     <input type="text" class="form-control" id="dtp_fechadistribucion" placeholder="Fecha de distribución">
                 </div>
                 <div class="form-group">
                     <label for="cb_proveedor" class="control-label">Proveedor</label>
-                    <input type="number" class="form-control" id="cb_proveedor" placeholder="Proveedor">
+                    <select class="form-control" id="cb_proveedor" > </select>                      
                 </div>
                 <div class="form-group">
                     <label for="cb_tipomarca" class="control-label">Marca</label>
-                    <input type="number" class="form-control" id="cb_tipomarca" placeholder="Marca">
+                    <select class="form-control" id="cb_tipomarca" > </select>  
                 </div>
 
                 <div class="form-group">
-                    <button type="submit" id="btn_guadar_dinero" class="btn btn-primary">Guardar Billetes</button>
+                    <button type="submit" id="btn_guadar_stock" class="btn btn-primary">Guardar Stock</button>
                 </div>
             </form>
 

@@ -151,8 +151,54 @@ namespace ISVLM2017.Domain.Concrete
             return listr;
         }
 
+        public void grabarEjemplares(ConfiguracionEjemplar ConfiguracionEjemplares)
+        {      
+                context.ConfiguracionEjemplares.Add(ConfiguracionEjemplares);
+                context.SaveChanges(); 
+        }
 
+        public void borrarEjemplares(ConfiguracionEjemplar ConfiguracionEjemplares)
+        {
+            var borrarDatos = (from j in context.ConfiguracionEjemplares
+                               where j.conf_ejemplares_id == ConfiguracionEjemplares.conf_ejemplares_id
+                               select j).Single();
+            context.ConfiguracionEjemplares.Remove(borrarDatos);
+            context.SaveChanges();
+        }
+        public ConfiguracionEjemplar buscarEjemplarStock(int conf_ejemplares_id_)
+        {
+
+            var ts_ = (from ce in context.ConfiguracionEjemplares
+                       join s in context.Stocks on ce.stock_id equals s.stock_id
+                       where ce.conf_ejemplares_id == conf_ejemplares_id_
+
+                       select new
+                       {
+
+
+                           ce.conf_transaccion,
+                           ce.stock_id,
+                           s.stock_precio,
+                           s.stock_comision_canilla,
+                           s.stock_comision_distribuidor
+                       }).Single();
+
+            ConfiguracionEjemplar ju = new ConfiguracionEjemplar();
+
+
+
+
+            ju.stock_id = ts_.stock_id;
+            ju.conf_transaccion = ts_.conf_transaccion;
+            ju.stock_precio = ts_.stock_precio;
+            ju.stock_comision_canilla = ts_.stock_comision_canilla;
+            ju.stock_comision_distribuidor = ts_.stock_comision_distribuidor;
+
+
+            return ju;
+        }
 
     }
+
 
 }

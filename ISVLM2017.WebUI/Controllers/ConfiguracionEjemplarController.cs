@@ -37,8 +37,26 @@ namespace ISVLM2017.WebUI.Controllers
             tc.codigogeneral_id = cons_g_ejemplar;
             model.Ejemplares = repository.buscarListaCodigoDetalle(tc);
             model.Stockconf = repositoryStock.buscarListaStock();
-            model.ConfEjemplares = repositoryConfiguracionEjemplar.buscarListaEjemplares( 1);
+            model.ConfEjemplares = repositoryConfiguracionEjemplar.buscarListaEjemplares( 0);
             return View(model);
+        }
+        [HttpPost]
+        public JsonResult MostrarListaEjemplares(int conf_dia_semana_)
+        {
+            return Json(repositoryConfiguracionEjemplar.buscarListaEjemplares(conf_dia_semana_));
+        }
+        [HttpPost]
+        public JsonResult AgregarStckConf(ConfiguracionEjemplar nuevoConfiguracionEjemplar)
+        {
+            repositoryConfiguracionEjemplar.grabarEjemplares(nuevoConfiguracionEjemplar);
+            return Json(repositoryConfiguracionEjemplar.buscarListaEjemplares(nuevoConfiguracionEjemplar.conf_dia_semana));
+        }
+
+        [HttpPost]
+        public JsonResult EliminarStckConf(ConfiguracionEjemplar nuevoConfiguracionEjemplar)
+        {
+            repositoryConfiguracionEjemplar.borrarEjemplares(nuevoConfiguracionEjemplar);
+            return Json(repositoryConfiguracionEjemplar.buscarListaEjemplares(nuevoConfiguracionEjemplar.conf_dia_semana));
         }
     }
 }

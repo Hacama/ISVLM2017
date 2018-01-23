@@ -13,6 +13,9 @@ namespace ISVLM2017.Domain.Abstract
         List<ConfiguracionEjemplar> listarEjemplares(int conf_dia_semana_);
         List<ConfiguracionEjemplar> crearTablaEjemplare(int conf_dia_semana_);
         List<Stock> ListatablaProductoStock(int stock_tipomercaderia, DateTime stock_fechaventa);
+        void grabarEjemplares(ConfiguracionEjemplar ConfiguracionEjemplares);
+        void borrarEjemplares(ConfiguracionEjemplar ConfiguracionEjemplares);
+        ConfiguracionEjemplar buscarEjemplarStock(int conf_ejemplares_id_);
     }
    
 }

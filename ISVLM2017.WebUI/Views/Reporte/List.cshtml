@@ -31,59 +31,22 @@ or
 
 <script type="text/javascript">
 
-   
+
     function S_LLenarMarcas(response) {
 
 
         var cb_ReporteVMarca = $('#cb_ReporteVMarca');
-        cb_ReporteVMarca.html("");      
-   
+        cb_ReporteVMarca.html("");
+
         cb_ReporteVMarca.append(new Option("Seleccione", ""));
         $.each(response, function (i, item) {
             var codigodetalle_id = $.trim(response[i].codigodetalle_id);
-            var codigodetalle_descrip = $.trim(response[i].codigodetalle_descrip);         
-            cb_ReporteVMarca.append(new Option(codigodetalle_descrip, codigodetalle_id));    
-        });     
-
-
-    }
-
-
-    function GuardarStock(nuevoBilletes, g_accion_) {
-
-        var ObjectData = new Object();
-        ObjectData.nuevoBilletes = nuevoBilletes;
-        ObjectData.accion = g_accion_;
-        var stringify = JSON.stringify(ObjectData);
-
-
-        $.ajax({
-            type: "POST",
-            url: "/CajaDetalle/GuardarStock",
-            data: stringify,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-
-                if (otable != null) otable.destroy();
-                $('#tbl_Stock').empty();
-                otable = '';
-
-                S_ShowListaDetalle(response);
-
-
-                //$('#first-datatable-output').html($('#first-datatable-without').html());
-
-            },
-            failure: function (response) {
-                alert(response.responseText);
-            },
-            error: function (response) {
-                alert(response.responseText);
-            }
+            var codigodetalle_descrip = $.trim(response[i].codigodetalle_descrip);
+            cb_ReporteVMarca.append(new Option(codigodetalle_descrip, codigodetalle_id));
         });
-    }
 
+
+    }
 
 
     /* First example */
@@ -94,7 +57,11 @@ or
         S_LLenarMarcas( @Html.Raw(Json.Encode(Model.Marcas)));
         $("#rb_ReporteVTodo").prop('checked', true);
 
-        $('#dtp_ReporteVmes').datetimepicker();
+        $('#dtp_ReporteVmes').datetimepicker({
+            format: 'DD/MM/YYYY',
+            defaultDate: moment(),
+            sideBySide: true
+        });
 
         $('#btn_reporteVentas').on('click', function (e) {
             if (!(e.isDefaultPrevented())) {
@@ -109,30 +76,24 @@ or
 
                 } else if (rb_ReporteVMarca.is(":checked"))                {
                     var i_ReporteVMarca = $("#cb_ReporteVMarca").val();
-                    var i_ReporteVmes = $("#dtp_ReporteVmes").val();
+                    var date = new Date($("#dtp_ReporteVmes").data("DateTimePicker").date());                  
+                    var i_ReporteVmes = date.getMonth() + 1;
                     i_marca = i_ReporteVMarca;
                     i_mes = i_ReporteVmes;
-                    alert(i_ReporteVmes);
+                   // alert(i_ReporteVmes);
                 }
-             
+
             }
+           window.open('@Url.Action("ExportVentaPorMarca")?i_marca=' + i_marca + '&i_mes=' + i_mes, '_top', false)
             return false;
         });
 
+        $('#btn_ReporteE').on('click', function (e) {
+            if (!(e.isDefaultPrevented())) {
 
-        $('body').on('click', '.table-remove', function (e) {
-            //  $('.table-remove').on('click', function (e) {
-            e.preventDefault();
-            g_accion = "Eliminar";
-            var stock_id = $.trim($(this).parents("tr").find("td:eq(0)").html());
-            g_stock_id = stock_id;
+                window.open('@Url.Action("ExportEjemplarVentaPorTipo")', '_top', false)
 
-            var g_accion_ = g_accion;
-
-            var nuevoStock = {};
-            nuevoStock.stock_id = stock_id;
-
-            GuardarStock(nuevoStock, g_accion_);
+            }
             return false;
         });
 
@@ -160,7 +121,7 @@ or
             <div class="form-group">
                 <label for="cb_ReporteVMarca" class="control-label col-sm-3">Marcas</label>
                 <div class="col-sm-8">
-                    <select class="form-control" id="cb_ReporteVMarca"/>                   
+                    <select class="form-control" id="cb_ReporteVMarca"></select>                   
                 </div>
             </div> 
             <div class="form-group">

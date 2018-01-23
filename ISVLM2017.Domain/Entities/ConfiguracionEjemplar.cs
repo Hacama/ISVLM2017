@@ -15,18 +15,23 @@ namespace ISVLM2017.Domain.Entities
         public int conf_transaccion { get; set; }
         public int conf_ejemplar { get; set; }
 
-        public virtual Stock TB_STOCK { get; set; }
-
-
+        public virtual Stock TB_STOCK { get; set; }  
 
     }
         partial class ConfiguracionEjemplar
         {
-            public string stock_nombre { get; set; }
-            public string codigodetalle_descrip { get; set; }
-            public string nombre_ejemplar { get; set; }
-            public decimal stock_precio { get; set; }
-            public decimal stock_comision_canilla { get; set; }
-            public decimal stock_comision_distribuidor { get; set; }
+             [NotMapped]
+            public virtual string stock_nombre { get; set; }
+             [NotMapped]
+            public virtual string codigodetalle_descrip { get; set; }
+             [NotMapped]
+            public virtual string nombre_ejemplar { get; set; }
+             [NotMapped]
+            public virtual decimal stock_precio { get; set; }
+             [NotMapped]
+            public virtual decimal stock_comision_canilla { get; set; }
+             [NotMapped]
+            public virtual decimal stock_comision_distribuidor { get; set; }
+
         }
 }

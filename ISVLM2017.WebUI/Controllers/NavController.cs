@@ -29,7 +29,7 @@ namespace ISVLM2017.WebUI.Controllers
             new NavMenu { Controller = "Home"  , Action = "List",Description="Principal"  },
             new NavMenu { Controller = "Stock"  , Action = "List",Description="Stock"  },
             new NavMenu { Controller =  "ConfiguracionEjemplar" , Action = "List" ,Description="Configuración de ejemplares" },
-            new NavMenu { Controller =  "CajaDetalle" , Action = "List",Description="Caja detalles"  },
+          //  new NavMenu { Controller =  "CajaDetalle" , Action = "List",Description="Caja detalles"  },
             new NavMenu { Controller =  "Ejemplar" , Action = "List",Description="Ejemplares"  },
             new NavMenu { Controller =  "Producto" , Action = "List",Description="Productos"  },
            // new NavMenu { Controller =  "CajaDetalle" , Action = "List",Description="Clientes incidencias"  },

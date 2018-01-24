@@ -35,10 +35,7 @@ namespace ISVLM2017.WebUI.Controllers
            // new NavMenu { Controller =  "CajaDetalle" , Action = "List",Description="Clientes incidencias"  },
             new NavMenu { Controller =  "Reporte" , Action = "List",Description="Reportes"  }
             };
-        //IEnumerable<string> categories = repository.CajaDetalles
-        //.Select(x => x.cajadetalle_descripcion)
-        //.Distinct()
-        //.OrderBy(x => x);
+
             return PartialView(mylist);
         }
 

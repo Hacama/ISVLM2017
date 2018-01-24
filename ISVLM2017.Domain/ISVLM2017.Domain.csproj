@@ -110,10 +110,12 @@
     <Compile Include="Entities\TipoEjemplarStock.cs" />
     <Compile Include="Model\ConfiguracionEjemplarViewModel.cs" />
     <Compile Include="Model\EjemplarViewModel.cs" />
+    <Compile Include="Model\LogisticaViewModel.cs" />
     <Compile Include="Model\PrincipalViewModel.cs" />
     <Compile Include="Model\ProductoViewModel.cs" />
     <Compile Include="Model\ReporteViewModel.cs" />
     <Compile Include="Model\StockViewModel.cs" />
+    <Compile Include="Model\VentaViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

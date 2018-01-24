@@ -231,6 +231,7 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\jstree.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\moment-with-locales.js" />
     <Content Include="Scripts\moment-with-locales.min.js" />
@@ -248,10 +249,12 @@
     <Compile Include="Controllers\ConfiguracionEjemplarController.cs" />
     <Compile Include="Controllers\EjemplarController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LogisticaController.cs" />
     <Compile Include="Controllers\NavController.cs" />
     <Compile Include="Controllers\ProductoController.cs" />
     <Compile Include="Controllers\ReporteController.cs" />
     <Compile Include="Controllers\StockController.cs" />
+    <Compile Include="Controllers\VentaController.cs" />
     <Compile Include="CrystalReports\CR_ReporteEjemplarVentaPorTipo.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -293,6 +296,8 @@
     <Content Include="Views\Ejemplar\List.cshtml" />
     <Content Include="Views\Producto\List.cshtml" />
     <Content Include="Views\Reporte\List.cshtml" />
+    <Content Include="Views\Venta\List.cshtml" />
+    <Content Include="Views\Logistica\List.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

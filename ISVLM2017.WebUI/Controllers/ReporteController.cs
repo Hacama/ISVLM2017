@@ -78,10 +78,10 @@ namespace ISVLM2017.WebUI.Controllers
 
             dt = ConvertToDataTable(allVentaPorMarca, "SP_LISTAR_VENTA_PORMARCA");
             ds.Tables.Add(dt);
-            dB = ConvertToDataTable(allCajaBillete, "SP_LISTAR_CAJA_BILLETE");
-            ds.Tables.Add(dB);
-            dM = ConvertToDataTable(allCajaMoneda, "SP_LISTAR_CAJA_MONEDA");
-            ds.Tables.Add(dM);
+            //dB = ConvertToDataTable(allCajaBillete, "SP_LISTAR_CAJA_BILLETE");
+            //ds.Tables.Add(dB);
+            //dM = ConvertToDataTable(allCajaMoneda, "SP_LISTAR_CAJA_MONEDA");
+            //ds.Tables.Add(dM);
 
             rd.SetDataSource(ds);         
 
